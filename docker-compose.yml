@@ -1,71 +1,37 @@
 version: '3.9'
 
-services:
-  condb:
-    image: postgres:16
-    restart: always
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+services: 
+  datadb: 
+    container_name: datadb
+    image: postgres:16-alpine
+    env_file:
+      - .env
+    ports:
+      - 15432:5432  
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
-  django_app:
+  django-app:
+    container_name: django-app
     build: .
-    command: bash str/django.sh
+    image: app:latest
+    env_file:
+      - .env
     volumes:
-      - .:/app
-    depends_on:
-      - condb
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      DB_HOST: condb
-      DB_PORT: 5432
+      - ./str:/app
     ports:
-      - "8000:8000"
+      - 8001:8000
+    depends_on:
+      - datadb
+    entrypoint: /django.sh
+    command: >
+      bash -c "
+      python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
 
 volumes:
   pgdata:
-
-
-
-# services:
-#   condb:
-#     container_name: condb
-#     image: postgres:16-alpine
-#     restart: always
-#     env_file:
-#       - .env
-#     ports:
-#       - "${POSTGRES_PORT:-5432}:5432"
-#     volumes:
-#       - pgdata:/var/lib/postgresql/data
-#     healthcheck:
-#       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-#       interval: 5s
-#       retries: 5
-
-#   web:
-#     container_name: django_app
-#     build: .
-#     command: python manage.py runserver 0.0.0.0:8000
-#     working_dir: /app/str    # WORKDIR docker-compose bilan moslashtirildi
-#     volumes:
-#       - .:/app
-#     ports:
-#       - "8000:8000"
-#     env_file:
-#       - .env
-#     depends_on:
-#       condb:
-#         condition: service_healthy
-
-# volumes:
-#   pgdata:
 
 

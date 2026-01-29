@@ -1,11 +1,11 @@
-# !/bin/bash
+#!/bin/sh
 
-# ==========================
-echo "Create migrations"
-python manage.py makemigrations
-echo "====================================="
-echo "Create Migrate"
-python manage.py migrate
-echo "======================================"
-echo "Start server"
-python manage.py runserver 0.0.0.0:8000
+echo "⏳ Postgres kutilyapti..."
+
+until pg_isready -h datadb -p 5432; do
+  sleep 1
+done
+
+echo "✅ Postgres ishga tushdi"
+
+exec "$@"

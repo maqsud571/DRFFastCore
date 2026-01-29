@@ -1,41 +1,16 @@
-# FROM python:3.9
+FROM python:3.10.12
 
-# ENV PYTHONDONTWRITEBYTECODE 1
-# ENV PYTHONUNBUFFERED 1
-
-# WORKDIR /app
-
-# # requirements.txt ni nusxalash va o'rnatish
-# COPY requirements.txt .
-# RUN pip install -r requirements.txt
-
-# # loyihani nusxalash
-# COPY . .
-
-# # Skriptga ijro huquqini berish
-# RUN chmod +x str/django.sh
-
-# EXPOSE 8000
-
-# # Konteyner ishga tushganda skriptni ishga tushuradi
-# ENTRYPOINT ["str/django.sh"]
-FROM python:3.9
-
-ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Django loyihasi konteyner ichida
-WORKDIR /app/str
+# pg_isready uchun
+RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 
-# requirements o'rnatish
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+WORKDIR /app
 
-# loyihani nusxalash
-COPY . .
+COPY django.sh /django.sh
+RUN chmod +x /django.sh
 
-EXPOSE 8000
+COPY str/requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Server ishga tushishi
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-ENTRYPOINT ["str/django.sh"]
+COPY . /app/
