@@ -31,7 +31,34 @@ services:
       python manage.py runserver 0.0.0.0:8000
       "
 
+
+  fast-api:
+    build: ./str/api   # sizning ikkinchi fastapi loyihangiz katalogi
+    container_name: fast-api
+    env_file:
+      - .env
+    depends_on:
+      - datadb
+    volumes:
+      - ./str/api:/app   # src fayllarni synhron qiladi
+    ports:
+      - "9999:9000"
+    command: uvicorn main:app --host 0.0.0.0 --port 9000 --reload
+  
+      
 volumes:
   pgdata:
 
 
+
+# fastapi-app:
+  #   build: ./str/api
+  #   container_name: fastapi-app
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - datadb
+  #   ports:
+  #     - "8002:8000"
+  #   volumes:
+  #     - ./str/api:/app   # shuni qo'shing
