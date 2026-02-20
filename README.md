@@ -13,18 +13,22 @@ Ushbu repository tayyor **Hybrid Microservices Architecture** bo‘lib, Django v
 * **Production-ready architecture** — volumes, env, lightweight images
 
 # 📁 Project Structure
-DRFFastCore/ 
-│
-├── src/               
-│   ├──Api/          
-│   ├──Core/
-│   └── User/           
-├── README.md                  
-├── .env            
-├── Dockerfile                 
-├── docker-compose.yml         
-├── requirements.txt 
+```
+📦 DRFFastCore/
+├── str/
+│   ├── Core/
+│   ├── manage.py
+│   ├── apps/...
+│   ├── Api/
+│   ├── main.py
+│   ├── User/
+│   └── models/...
+├── docker-compose.yml
+├── Dockerfile
+├── .env
+└── README.md
 
+```
 # 🚀 One-command Start
 Projectni ishga tushirish uchun **bitta komandani** bajarish kifoya:
 
